@@ -1,0 +1,22 @@
+# IDE Files
+.idea/
+.vscode/
+*.iml
+*.suo
+*.ntvs*
+*.njsproj
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Backend (General)
+backend/node_modules/
+backend/venv/
+backend/.env
+backend/dist/
+backend/build/
+
+# Sensitive Info
+.env
+*.log
