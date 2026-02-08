@@ -1,0 +1,37 @@
+# IDE Files
+.idea/
+.vscode/
+*.iml
+*.suo
+*.ntvs*
+*.njsproj
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backend (General)
+backend/node_modules/
+backend/venv/
+backend/.env
+backend/dist/
+backend/build/
+
+# Python bytecode (Crucial: fixes backend/__pycache__/)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Sensitive Info
+.env
+*.log
+
+# Frontend (Flutter)
+**/node_modules/
+**/build/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.pub-cache/
+**/.pub/
