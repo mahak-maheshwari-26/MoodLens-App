@@ -1,14 +1,18 @@
+from datetime import datetime
 from fastapi import HTTPException, APIRouter , Depends
 from sqlalchemy.orm import Session
 import bcrypt 
 from models import UserAuth
 import pydantic_schemas as schemas
 from database import get_db 
+import auth_utils
+
+
 
 
 router = APIRouter()
 
-@router.post('/signup', status_code=201)
+@router.post('/signup',response_model= schemas.TokenResponse ,status_code=201)
 def signup_user(user_data : schemas.UserCreate , db :Session = Depends(get_db)):
     
     # check if user already exists in database
@@ -44,13 +48,26 @@ def signup_user(user_data : schemas.UserCreate , db :Session = Depends(get_db)):
             status_code=500,
             detail="Database error occured."
         )
-    return {"message": f"User created successfully! {new_user.email}"}
+    # return {"message": f"User created successfully! {new_user.email}"}
+    
     # Return JWT Token
+    token = auth_utils.create_access_token(data= {"sub" : str(new_user.id)})
+
+    return{
+        # "message" : "User created successfully!",
+        "access_token" : token,
+        "token_type" : "bearer",
+        "email" : new_user.email,
+        "last_login" : new_user.last_login,
+        "message": "User created successfully!"
+    }
+
+
     # call create_access_token here
 
 
 
-@router.post('/login')
+@router.post('/login', response_model=schemas.TokenResponse)
 def login_user(user_data : schemas.UserLogin, db : Session = Depends(get_db)):
     
     # check if user with same email already exists then only they can login
@@ -72,5 +89,21 @@ def login_user(user_data : schemas.UserLogin, db : Session = Depends(get_db)):
             detail="Incorrect Password!"
         )
     
-    return {"message": f"Login successful! Welcome {user_exists.email}"}
-    # return 
+    # return {"message": f"Login successful! Welcome {user_exists.email}"}
+    
+    # UPDATE the last_login in the database
+    user_exists.last_login = datetime.now()
+    db.commit()
+    db.refresh(user_exists)
+    
+    # id from the databse user object not from the request
+    token = auth_utils.create_access_token(data = {"sub" : str(user_exists.id)})
+
+    return {
+        "access_token" : token,
+        "token_type" : "bearer",
+        "email" : user_exists.email,
+        "last_login" : user_exists.last_login,
+        "message": "User logged in successfully!"
+    }
+

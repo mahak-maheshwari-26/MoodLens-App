@@ -1,3 +1,4 @@
+from datetime import date
 from .base import Base 
 import uuid
 from sqlalchemy import Column,String, Date, ForeignKey
@@ -16,3 +17,12 @@ class UserDetails(Base):
 
     # Name of class in string
     owner = relationship("UserAuth" , back_populates= "details")
+
+    @property
+    def age(self):
+        if self.birthdate:
+            today = date.today()
+            return today.year - self.birthdate.year - (
+                (today.month , today.day)
+            )
+        return None

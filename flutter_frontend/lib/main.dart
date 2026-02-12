@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_frontend/features/auth/presentation/auth_gate.dart';
+// import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'features/auth/presentation/signup_page.dart';
+import 'theme/app_theme2.dart';
 
 void main() {
-  runApp(const MyApp());
+  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
+  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -10,39 +19,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'MoodLens',
-      theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      theme: AppTheme.light,
+      // darkTheme: AppTheme.dark,
+      debugShowCheckedModeBanner: false,
+      // themeMode: ThemeMode.system,
+      home: const AuthGate(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key, required this.title});
 
-  final String title;
-  @override
-  Widget build(BuildContext context) {
-   return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title),
-      ),
-      body: Center(
-        child: Column(
-            mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              "Hello World",
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      
-    );
-  }
-}
