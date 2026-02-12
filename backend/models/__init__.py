@@ -6,3 +6,4 @@ from .base import Base
 
 from .user_model import UserAuth
 from .user_details_model import UserDetails
+from .journal_entry_model import JournalEntry
