@@ -1,6 +1,6 @@
 import 'package:flutter_frontend/features/auth/models/user_profile_model.dart';
 
-import '../data/auth_service.dart';
+import '../services/auth_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'auth_provider.g.dart';
 
