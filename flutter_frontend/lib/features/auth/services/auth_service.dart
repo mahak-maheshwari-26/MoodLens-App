@@ -50,10 +50,14 @@ class AuthService{
   }
   
   Future<Response> login(String email , String password) async {
-    return await _dio.post('/login' , data: {
+    try{
+      return await _dio.post('/login' , data: {
       'email' : email,
       'password' : password,
     });
+    } on DioException catch (e) {
+      throw e.response?.statusCode.toString() ?? "Connection Error";
+    }
   }
   
   Future<Response> updateProfile({

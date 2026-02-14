@@ -23,10 +23,12 @@ class Palette {
 
   // --- SOFT CARD TINTS (Use for "For You" Card Backgrounds) ---
   // These prevent the "Indigo-only" look by providing soft variety
-  static const Color cardIndigoTint = Color(0xFFEEF2FF); // Very Pale Indigo
-  static const Color cardTealTint = Color(0xFFF0FDFA);   // Very Pale Teal
-  static const Color cardBrownTint = Color(0xFFFEFCE8);  // Very Pale Sand/Brown
-  static const Color cardGreyTint = Color(0xFFF1F5F9);   // Very Pale Slate
+  static const Color cardIndigoTint = Color.fromARGB(255, 216, 225, 254); // Very Pale Indigo
+  static const Color cardTealTint = Color.fromARGB(255, 206, 248, 238);   // Very Pale Teal
+  static const Color cardBrownTint = Color.fromARGB(255, 234, 233, 214);  // Very Pale Sand/Brown
+  static const Color cardGreyTint = Color.fromARGB(255, 210, 218, 227);   // Very Pale Slate
+  static const Color cardPinkTint = Color.fromARGB(255, 255, 228, 242);   // Very Pale Slate
+  static const Color cardOrangeTint = Color.fromARGB(255, 255, 226, 194);   // Very Pale Slate
 
 
   // --- EMOTION POP PALETTE (Vibrant version) ---
@@ -34,8 +36,11 @@ class Palette {
   static const Color calm = Color(0xFF34D399);     // Emerald Mint
   static const Color sadness = Color(0xFF60A5FA);  // Bright Blue
   static const Color anger = Color(0xFFFB7185);    // Rose Red
-  static const Color anxiety = Color(0xFFA78BFA);  // Soft Lavender
+  static const Color fear = Color(0xFFA78BFA);  // Soft Lavender
   static const Color neutral = Color(0xFF94A3B8);  // Slate Grey
+  static const Color disgust = Color(0xFF84CC16); // Lime Green
+  static const Color shame = Color(0xFFD97706);   // Burnt Orange/Ochre
+  static const Color guilt = Color(0xFF475569);   // Heavy Slate Grey
 
   // Neutral Tones for Borders and Backgrounds
   static const Color lightGrey = Color(0xFFF2F2F2);
@@ -71,6 +76,15 @@ class AppGradients {
   begin: Alignment.topRight,
   end: Alignment.bottomLeft,
 );
+
+  static const LinearGradient indigoGradient = LinearGradient(
+    colors: [
+      Color(0xFF8E2DE2), // Almost white with a purple hint
+      Color(0xFF4A00E0), // Subtle lavender gray
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
 
   // GLASS EFFECT GRADIENT (Use for subtle card backgrounds)
   static const LinearGradient glassGradient = LinearGradient(

@@ -59,6 +59,7 @@ dependencies:
   google_fonts: ^8.0.1
   lucide_icons: ^0.257.0
   flutter_native_splash: ^2.4.7
+  fl_chart: ^1.1.1
 
 
 
@@ -98,6 +99,7 @@ flutter:
   assets:
     - assets/images/moodlens_logo.png
     - assets/images/app_image.png
+    - assets/animations/crystalBall.json
 
 
   #   - images/a_dot_burr.jpeg

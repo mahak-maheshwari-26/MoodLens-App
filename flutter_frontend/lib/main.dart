@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_frontend/features/auth/presentation/auth_gate.dart';
-// import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_frontend/features/auth/presentation/signin_page.dart';
+import 'package:flutter_frontend/features/auth/presentation/signup_page.dart';
+import 'package:flutter_frontend/features/dashboard/presentation/dashboard_screen.dart.dart';
+import 'package:flutter_frontend/features/dashboard/presentation/stats_page.dart';
+import 'package:flutter_frontend/features/journal/presentation/journal_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'features/auth/presentation/signup_page.dart';
 import 'theme/app_theme2.dart';
 
 void main() {
@@ -19,11 +22,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: AppTheme.light,
-      // darkTheme: AppTheme.dark,
+      theme: AppTheme.light,      
       debugShowCheckedModeBanner: false,
-      // themeMode: ThemeMode.system,
-      home: const AuthGate(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const AuthGate(),
+        '/add-journal': (context) => const JournalEntryPage(),
+        '/stats': (context) => const StatsPage(), 
+        '/login' : (context) => const SigninPage(),
+        '/signup' : (context) => const SignupPage(),
+        '/dashboard' : (context) => const MainDashboard(),
+      },
     );
   }
 }

@@ -1,7 +1,7 @@
 class JournalEntry{
   final int id;
   final String title;
-  final String content;
+  final String? content;
   final String primaryEmotion;
   final String? secondaryEmotion;
   final double confidenceScore;
@@ -10,7 +10,7 @@ class JournalEntry{
   JournalEntry({
     required this.id,
     required this.title,
-    required this.content,
+    this.content,
     required this.primaryEmotion,
     this.secondaryEmotion,
     required this.confidenceScore,
@@ -21,12 +21,33 @@ class JournalEntry{
     return JournalEntry(
       id : json['id'],
       title : json['title'],
-      content : json['content'],
+      content : json['content'] ?? "",
       primaryEmotion : json['primary_emotion'],
       secondaryEmotion : json['secondary_emotion'],
       confidenceScore : json['confidence_score'].toDouble(),
-      createdAt : DateTime.parse(json['created_at']),
+      createdAt : DateTime.parse(json['created_at']).toLocal(),
     );
   }
+}
+
+class JournalListResponse{
+  final List<JournalEntry> entries;
+  final int totalCount;
+
+JournalListResponse({
+  required this.entries,
+  required this.totalCount,
+});
+
+factory JournalListResponse.fromJson(Map<String,dynamic> json){
+
+  return JournalListResponse(
+    entries : (json['entries'] as List)
+             .map((e) => JournalEntry.fromJson(e))
+             .toList(),
+    totalCount : json['total_count'],
+  );
+}
+
 }
 

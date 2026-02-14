@@ -1,5 +1,4 @@
-import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
@@ -118,6 +117,18 @@ def list_my_journals(
         .order_by(JournalEntry.created_at.desc())
         .all()
     )
+
+    # entries = []
+    # for entry in db_entries:
+    #     entries.append({
+    #         "id": entry.id,
+    #         "title": entry.title,
+    #         "content": decrypt_text(entry.encrypted_content), 
+    #         "primary_emotion": entry.primary_emotion,
+    #         "secondary_emotion": entry.secondary_emotion,
+    #         "confidence_score": entry.confidence_score,
+    #         "created_at": entry.created_at
+    #     })
 
     return{
         "entries" : entries,

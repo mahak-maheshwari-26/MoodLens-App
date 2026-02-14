@@ -41,21 +41,40 @@ class _SigninPageState extends ConsumerState<SigninPage> {
     final authState = ref.watch(authProvider);
 
     ref.listen<AsyncValue<String?>>(authProvider, (previous,next){
-      next.whenOrNull(
+      
+      next.when(
         error : (error , stack) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Error Occurred"),
-            backgroundColor: Palette.error,
-            )
-          );
+         if (next is AsyncError){
+          _emailController.clear();
+          _passwordController.clear();
+          FocusScope.of(context).unfocus();
+
+          ScaffoldMessenger.of(context).clearSnackBars();
+
+          String message = "";
+          final errorStr = error.toString();
+            if (errorStr.contains("400") || errorStr.contains("404")) {
+              message = "User does not exist or invalid credentials";
+            } else if (errorStr.contains("401")) {
+              message = "Unauthorized. Please try again.";
+            }
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(message),
+                backgroundColor: Palette.error,
+                duration: const Duration(seconds: 3), // Fixed duration
+              ),
+            );
+      }
         },
+        loading: () => {},
         data : (token) {
           if(token != null){
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Login Successful!",
                 style: TextStyle(fontSize: 20 , fontWeight: FontWeight.bold),),
               backgroundColor: Palette.success,),
-              
             );
           }
         },
@@ -102,7 +121,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                       softWrap: true,
                       style: TextStyle(
                         fontSize: 18,
-                        color: Palette.darkGrey.withValues(alpha: 0.7),
+                        color: Palette.darkGrey.withValues(alpha: 0.9),
                         height: 1.4,
                       ),
                     ),
@@ -152,7 +171,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
               
                               InkWell(
                                 borderRadius: BorderRadius.circular(8),
-                                onTap: () => Navigator.pop(context),
+                                onTap: () => Navigator.pushReplacementNamed(context, '/signup'),
                                 child: Container(
                                   padding: const EdgeInsets.only(bottom: 1),
               

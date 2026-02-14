@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_frontend/features/auth/presentation/profile_setup_page.dart';
 import 'package:flutter_frontend/features/auth/presentation/signin_page.dart';
-import 'package:flutter_frontend/features/dashboard/presentation/main_dashboard.dart';
-import 'package:flutter_frontend/screens/dashboard_page.dart';
+import 'package:flutter_frontend/features/dashboard/presentation/dashboard_screen.dart.dart';
 import 'package:flutter_frontend/theme/app_theme.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,6 +18,7 @@ class AuthGate extends ConsumerWidget{
     // Watch the auth provider
     // When state changes from null to a token , re-run this 
     final authState = ref.watch(authProvider);
+
 
     return authState.when(
       data : (token) {
@@ -51,20 +51,30 @@ class AuthGate extends ConsumerWidget{
           loading: () => const LoadingScreen(),
           error: (error,stack) {
             FlutterNativeSplash.remove();
+            final err = error.toString().toLowerCase();
+          if (err.contains("404") || err.contains("not found") || err.contains("400")) {
+            return const ProfileSetupPage();
+          }
             return Scaffold(
               body: Center(child: Text("Error fetching profile : $error"),),);
           }
         );
+
+
       },
 
       loading: () => const LoadingScreen(),
       error: (error, stack) {
         FlutterNativeSplash.remove();
-        return Scaffold(
-          body: Center(child: Text("Connection Error : $error"),),
+        return authState.maybeWhen(
+          data: (token) => const SigninPage(),
+          orElse: () => const SigninPage(),
         );
-      } ,
+      },
+      // skipError : true,
     );
+
+
   }
 }
 
