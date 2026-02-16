@@ -35,7 +35,7 @@ class RecentReflectionCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.9),
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10)],
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.25), blurRadius: 10)],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +53,7 @@ class RecentReflectionCard extends StatelessWidget {
                     style: const TextStyle(color: Palette.slateHeading, fontSize: 14, fontWeight: FontWeight.w500)),
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             Row(
               children: [
                 _MoodBadge(emotion: entry.primaryEmotion ?? 'Neutral'),
@@ -82,12 +82,12 @@ class _MoodBadge extends StatelessWidget {
 
     final moodColor = RecentReflectionCard.getMoodColor(emotion);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: moodColor.withValues(alpha: 0.1),
+        color: moodColor.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Text(emotion.toUpperCase(), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: moodColor)),
+      child: Text(emotion.toUpperCase(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Palette.slateHeading.withValues(alpha: 0.8))),
     );
   }
 }

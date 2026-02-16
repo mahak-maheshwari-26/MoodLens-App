@@ -8,7 +8,7 @@ class UserDetails(Base):
 
     __tablename__ = "User_Details"
 
-    id = Column(String(36), primary_key=True, default= str(uuid.uuid4()))
+    id = Column(String(36), primary_key=True, default= lambda : str(uuid.uuid4()))
     full_name = Column(String)
     birthdate = Column(Date)
 

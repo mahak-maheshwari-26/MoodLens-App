@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_frontend/core/widgets/auth_widgets.dart';
 import 'package:flutter_frontend/features/auth/presentation/signin_page.dart';
-// import 'package:flutter_frontend/theme/app_theme2.dart';
 import 'package:flutter_frontend/theme/app_theme.dart';
 import '../providers/auth_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'profile_setup_page.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({super.key});
@@ -68,16 +65,14 @@ class _SignupPageState extends ConsumerState<SignupPage> {
               duration: Duration(seconds: 3),
               ),
             );
-            Navigator.pushAndRemoveUntil(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation , secondaryAnimation) => const ProfileSetupPage(),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                return FadeTransition(opacity: animation, child: child);
-              },
-              transitionDuration: Duration(milliseconds: 800),
-            ),
-            (route) => false);
+            // Pop the SignupPage. AuthGate is already sitting underneath 
+            // and has already switched to ProfileSetupPage!
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            } else {
+              // If you used pushReplacement, just clear the stack to let AuthGate take over
+              Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+            }
           }
         },
       );
@@ -182,7 +177,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                   
                               InkWell(
                                 borderRadius: BorderRadius.circular(8),
-                                onTap: () => Navigator.push(context,
+                                onTap: () => Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(builder: (context) => SigninPage())
                                 ),
                                 child: Container(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_frontend/core/widgets/auth_widgets.dart';
+import 'package:flutter_frontend/features/auth/presentation/signup_page.dart';
 // import 'package:flutter_frontend/theme/app_theme2.dart';
 import 'package:flutter_frontend/theme/app_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -171,7 +172,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
               
                               InkWell(
                                 borderRadius: BorderRadius.circular(8),
-                                onTap: () => Navigator.pushReplacementNamed(context, '/signup'),
+                                onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignupPage())),
                                 child: Container(
                                   padding: const EdgeInsets.only(bottom: 1),
               

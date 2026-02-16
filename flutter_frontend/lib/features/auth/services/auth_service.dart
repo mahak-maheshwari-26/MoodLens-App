@@ -30,7 +30,11 @@ class AuthService{
 
 
   // To store jwt token securely
-  final _storage = const FlutterSecureStorage();
+  final _storage = const FlutterSecureStorage(
+    aOptions: AndroidOptions(
+      resetOnError: true,
+    )
+  );
 
   Future<void> saveToken(String token) async => 
     await _storage.write(key: 'jwt_token', value: token);

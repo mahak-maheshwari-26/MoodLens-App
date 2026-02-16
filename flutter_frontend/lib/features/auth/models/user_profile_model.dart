@@ -11,7 +11,7 @@ class UserProfileDisplay{
   factory UserProfileDisplay.fromJson(
     Map<String,dynamic> json){
       return UserProfileDisplay(
-        fullName: json['full_name'], 
-        email: json['email']);
+        fullName: json['full_name'] ?? "", 
+        email: json['email'] ?? "");
     }
 }

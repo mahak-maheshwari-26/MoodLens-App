@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_frontend/core/widgets/journal_details_modal.dart';
 import 'package:flutter_frontend/core/widgets/recent_reflection_card.dart';
 import 'package:flutter_frontend/features/auth/providers/auth_provider.dart';
-import 'package:flutter_frontend/screens/demo.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../theme/app_theme.dart';
@@ -57,6 +56,66 @@ class MainDashboard extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  void _showEditNameDialog(BuildContext context, WidgetRef ref, String currentName){
+    final controller = TextEditingController(text : currentName);
+    
+    showDialog(
+      context: context, 
+      builder: (context) => AlertDialog(
+        surfaceTintColor: const Color.fromARGB(255, 166, 125, 239),
+        icon: Icon(Icons.person),
+        iconColor: Palette.indigoPrimary,
+        iconPadding: EdgeInsets.all(10),
+        shadowColor: Colors.black.withValues(alpha: 0.5),
+        elevation: 10,
+        insetPadding: EdgeInsets.all(20),
+        contentPadding: EdgeInsets.all(20),
+        actionsPadding: EdgeInsets.all(10),
+        title: const Text(
+          "Update Profile",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        content: SizedBox(
+          height: 80,
+          width: 100,
+          child: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              labelText: "Full Name",
+              labelStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w500,color: Palette.indigoPrimary),
+              floatingLabelStyle: const TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Palette.slateHeading),
+              hintText: "Enter your name",
+              hintStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w500,color: Palette.slateHeading),
+              focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Palette.indigoPrimary)
+              ),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context), 
+            child: const Text("Cancel",style: TextStyle(color: Colors.black)),
+            ),
+            ElevatedButton(
+              onPressed: () async{
+                final newName = controller.text.trim();
+                if (newName.isNotEmpty && newName != currentName){
+                  await ref.read(authProvider.notifier).updateName(newName);
+                  ref.invalidate(userProfileProvider);
+                }
+                if (context.mounted) Navigator.pop(context);
+              }, 
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Palette.indigoPrimary
+              ),
+              child: const Text("Save", style: TextStyle(color: Colors.white),)
+              )
+        ],
+      )
+      );
   }
 
   @override
@@ -114,7 +173,9 @@ class MainDashboard extends ConsumerWidget {
           title: const Text("Profile"),
           onTap: () {
             Navigator.pop(context); // Close drawer
-            // Navigator.pushNamed(context, '/profile');
+            userProfileState.whenData((profile){
+              _showEditNameDialog(context, ref, profile.fullName);
+            });
           },
         ),
         
@@ -151,13 +212,13 @@ class MainDashboard extends ConsumerWidget {
                       userProfileState.when(
                         data: (profile) => Text(
                           "${_getGreeting()}, ${profile.fullName}", 
-                          style: const TextStyle(fontSize: 16, color: Palette.bodyGrey, fontWeight: FontWeight.w600),
+                          style: const TextStyle(fontSize: 18, color: Palette.slateHeading, fontWeight: FontWeight.w600),
                         ),
                         loading:() => const Text("Loading...", style: TextStyle(fontSize: 16, color: Palette.bodyGrey, fontWeight: FontWeight.w600)),
                         error : (err,_) => Text("${_getGreeting()}, Friend"),
 
                       ),
-                      
+                      // const Divider(height: 50,),
                       const Text("Your Mood Journey",
                           style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Palette.slateHeading)),
                     ],
@@ -302,16 +363,27 @@ class _MoodDayCard extends StatelessWidget {
        _ => Palette.neutral,
     };
 
-    final moodIcon = switch (emotion.toLowerCase()) {
-      'joy' => Icons.sentiment_very_satisfied_outlined,
-      'sadness' => Icons.sentiment_dissatisfied_outlined,
-      'anger' => Icons.sentiment_very_dissatisfied_outlined,
-      'fear' => Icons.sentiment_very_dissatisfied_rounded,          
-      'disgust' => Icons.mood_bad_outlined,
-      'shame' => Icons.sentiment_dissatisfied_rounded,
-      'guilt' => Icons.sentiment_neutral_outlined,
-      _ => Icons.sentiment_satisfied_outlined,
-    };
+    // final moodIcon = switch (emotion.toLowerCase()) {
+    //   'joy' => Icons.sentiment_very_satisfied_outlined,
+    //   'sadness' => Icons.sentiment_dissatisfied_outlined,
+    //   'anger' => Icons.sentiment_very_dissatisfied_outlined,
+    //   'fear' => Icons.sentiment_very_dissatisfied_rounded,          
+    //   'disgust' => Icons.mood_bad_outlined,
+    //   'shame' => Icons.sentiment_dissatisfied_rounded,
+    //   'guilt' => Icons.sentiment_neutral_outlined,
+    //   _ => Icons.sentiment_satisfied_outlined,
+    // };
+
+    final String moodEmoji = switch (emotion.toLowerCase()) {
+    'joy' => '😊',
+    'sadness' => '😢',
+    'anger' => '😡',
+    'fear' => '😨',
+    'disgust' => '🤢',
+    'shame' => '😳',
+    'guilt' => '😔',
+    _ => '😐',
+  };
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -319,12 +391,13 @@ class _MoodDayCard extends StatelessWidget {
         width: 75,
         margin: const EdgeInsets.symmetric(horizontal: 4),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.8),
+          // color: Colors.white.withValues(alpha: 0.8),
+          color: moodColor.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: Palette.indigoPrimary.withValues(alpha: 0.2),width: 1.5),
           boxShadow: [
             BoxShadow(
-              color: moodColor.withValues(alpha: 0.1),
+              color: moodColor.withValues(alpha: 0.2),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -334,20 +407,20 @@ class _MoodDayCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
              Text(monthLabel, 
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Palette.bodyGrey)),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Palette.slateHeading)),
             Text(dayLabel, 
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Palette.slateHeading)),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Palette.slateHeading)),
            const SizedBox(height: 6),
             Container(
-          padding: const EdgeInsets.all(4),
+          padding: const EdgeInsets.all(2),
           decoration: BoxDecoration(
-            color: moodColor.withValues(alpha: 0.3), 
+            // color: moodColor.withValues(alpha: 0.5), 
             shape: BoxShape.circle,
           ),
-          child: Icon(
-            moodIcon,
-            color: moodColor, // Solid icon color
-            size: 30,
+          child: Text(
+            moodEmoji,
+            style: TextStyle( color: Palette.slateHeading, fontSize: 32), // Solid icon color
+            // size: 30,
           ),
         ),
           ],

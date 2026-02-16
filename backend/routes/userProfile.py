@@ -22,7 +22,7 @@ def update_profile(
         
         db.commit()
         db.refresh(profile)
-        message = "Name updated successfully!"
+        return{"status" : "success" , "message": "Name updated successfully!"}
 
     else:
         if not profile_data.birthdate:
@@ -37,12 +37,12 @@ def update_profile(
             user_id = current_user.id
         )
         db.add(new_profile)
-        message = "Profile created successfully"
+        
     
         db.commit()
         db.refresh(new_profile)
 
-    return{"status" : "success" , "message": message}
+    return{"status" : "success" , "message": "Profile created successfully"}
 
 @router.get('/me', response_model = schemas.UserProfileDisplay)
 def get_user_profile(

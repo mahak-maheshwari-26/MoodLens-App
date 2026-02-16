@@ -67,6 +67,17 @@ class AppGradients {
   static const LinearGradient etherealBackground = LinearGradient(
   colors: [
     Palette.iceWhite,
+    Color.fromARGB(255, 239, 239, 223),
+    Color.fromARGB(255, 199, 211, 249),
+    Color.fromARGB(255, 245, 212, 233),
+    Color.fromARGB(255, 136, 218, 224), 
+  ],
+  begin: Alignment.topRight,
+  end: Alignment.bottomLeft,
+);
+  static const LinearGradient etherealBackground2 = LinearGradient(
+  colors: [
+    Palette.iceWhite,
     // Color(0xFFEEF2FF), // A very faint Indigo tint (Indigo-50)
     // Color(0xFFECFEFF), // A very faint Cyan tint (Cyan-50)
 

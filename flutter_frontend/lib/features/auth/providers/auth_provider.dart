@@ -7,7 +7,6 @@ part 'auth_provider.g.dart';
 
 @Riverpod(keepAlive : true)
 class AuthNotifier extends _$AuthNotifier{
-  // final _authService = AuthService();
 
   AuthService get _authService => ref.read(authServiceProvider);
 
@@ -20,30 +19,41 @@ class AuthNotifier extends _$AuthNotifier{
   Future<void> signup(String email,String password) async{
     state = const AsyncLoading();
 
-    // AsyncValue.guard handles try and catch
-    state = await AsyncValue.guard(() async {
+    try {
       final response = await _authService.signup(email, password);
-      final token = response.data['access_token'];
+      final token = response.data['access_token'] as String;
       await _authService.saveToken(token);
-      return token; 
-    }); 
+      
+      // FORCE the state update here
+      state = AsyncData(token); 
+      ref.invalidate(userProfileProvider);
+    } catch (e, st) {
+      // print("CRITICAL: Signup failed with error: $e");
+      state = AsyncError(e, st);
+    }
   }
 
   Future<void> login(String email,String password) async{
     state = const AsyncLoading();
 
-    // AsyncValue.guard handles try and catch
-    state = await AsyncValue.guard(() async {
+    try {
       final response = await _authService.login(email, password);
-      final token = response.data['access_token'];
+      final token = response.data['access_token'] as String;
       await _authService.saveToken(token);
-      return token;
-    }); 
+      
+      // FORCE the state update here
+      state = AsyncData(token);
+      ref.invalidate(userProfileProvider);
+    } catch (e, st) {
+      state = AsyncError(e, st);
+    }
   }
 
   Future<void> logout() async{
     await _authService.logout();
-    state = const AsyncData(null);
+    ref.invalidateSelf();
+    ref.invalidate(userProfileProvider);
+    // state = const AsyncData(null);
   }
 
   //User Profile 
@@ -51,12 +61,28 @@ class AuthNotifier extends _$AuthNotifier{
     required String name,
     DateTime? birthdate,
   }) async{
+      try{
     // call the service 
     await _authService.updateProfile(
       name : name,
       birthdate : birthdate,
     );
-    ref.invalidate(userProfileProvider);
+
+  } catch(e) {
+      // print("Update Profile Error: $e");
+      rethrow;
+    }
+  }
+
+  // Update Name
+  Future<void> updateName(String newName) async{
+    try{
+      await _authService.updateProfile(name: newName);
+    }
+    catch(e){
+      // print("Error updating name : $e");
+      rethrow;
+    }
   }
 }
 
@@ -65,9 +91,12 @@ class AuthNotifier extends _$AuthNotifier{
 Future<UserProfileDisplay> userProfile(Ref ref) async {
   // it watches the auth state , if the token changes or disappears it will refetch the user profile
 
-  final auth = ref.watch(authProvider);
+  final authState = ref.watch(authProvider);
+  final token = authState.value;
 
-  if (auth.value == null) throw Exception("User not logged in");
+  if (token == null || token.isEmpty) {
+    throw Exception("Token not found Please Log in");
+  }
 
   return await ref.read(authServiceProvider).fetchUserProfile();
 }

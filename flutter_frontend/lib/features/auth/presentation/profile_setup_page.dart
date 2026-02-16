@@ -74,6 +74,11 @@ class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
         name: name,
         birthdate: _selectedDate,
         );
+      ref.invalidate(userProfileProvider);
+
+      if(mounted){
+        Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+      }
     } else if (_selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please select your birth date")),
