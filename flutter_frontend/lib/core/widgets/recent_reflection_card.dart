@@ -31,7 +31,7 @@ class RecentReflectionCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.9),
           borderRadius: BorderRadius.circular(20),
@@ -87,7 +87,7 @@ class _MoodBadge extends StatelessWidget {
         color: moodColor.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Text(emotion.toUpperCase(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Palette.slateHeading.withValues(alpha: 0.8))),
+      child: Text(emotion.toUpperCase(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Palette.slateHeading.withValues(alpha: 0.8))),
     );
   }
 }

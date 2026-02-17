@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_frontend/core/widgets/analysis_reflection.dart';
 import 'package:flutter_frontend/core/widgets/journal_details_modal.dart';
 import 'package:flutter_frontend/core/widgets/recent_reflection_card.dart';
 import 'package:flutter_frontend/features/auth/providers/auth_provider.dart';
+import 'package:flutter_frontend/features/dashboard/presentation/reflections_search_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../theme/app_theme.dart';
@@ -252,12 +254,37 @@ class MainDashboard extends ConsumerWidget {
                 ),
               ),
 
+              // Analysis
+
+              recentJournalsState.when(
+                data: (data) => SliverToBoxAdapter(
+                  child: WeeklyInsightCard(entries: data.entries),
+                ),
+                loading: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
+                error: (err, _) => const SliverToBoxAdapter(child: SizedBox.shrink()),
+              ),
+
               // Journal List
-              const SliverToBoxAdapter(
+              SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Text("Recent Reflections", 
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  padding: const EdgeInsets.all(20.0),
+                  child: Row(
+                    mainAxisAlignment : MainAxisAlignment.spaceBetween,
+
+                    children: [
+                      const Text("Recent Reflections", 
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      IconButton(
+                      icon: const Icon(Icons.search_rounded, color: Palette.indigoPrimary),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ReflectionsSearchPage()),
+                        );
+                      },
+                    ),
+                    ],
+                  ),
                 ),
               ),
 
@@ -420,7 +447,6 @@ class _MoodDayCard extends StatelessWidget {
           child: Text(
             moodEmoji,
             style: TextStyle( color: Palette.slateHeading, fontSize: 32), // Solid icon color
-            // size: 30,
           ),
         ),
           ],
