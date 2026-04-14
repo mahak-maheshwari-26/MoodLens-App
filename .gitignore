@@ -35,3 +35,6 @@ __pycache__/
 **/.flutter-plugins-dependencies
 **/.pub-cache/
 **/.pub/
+
+model_script/script.txt
+model_script/sample_text.txt

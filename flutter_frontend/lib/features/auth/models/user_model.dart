@@ -11,14 +11,14 @@ class UserModel {
     required this.message,
   });
 
-  // factory is here used to create auser from the Json response got 
+  // factory is here used to create a user from the Json response got 
   //from the backend of signup and login
 
   factory UserModel.fromJson(Map<String, dynamic> json){
     return UserModel(
       accessToken: json['access_token'],
       email : json['email'],
-      lastLogin : json['lasst_login'],
+      lastLogin : json['last_login'],
       message : json['message'],
     );
   }

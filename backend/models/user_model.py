@@ -17,6 +17,7 @@ class UserAuth(Base):
 
     details = relationship("UserDetails", back_populates="owner", uselist= False)
     journals = relationship("JournalEntry", back_populates="owner")
+    feedbacks = relationship("Feedback", back_populates="owner")
     
     @property
     def has_profile(self):

@@ -261,7 +261,8 @@ final List<Map<String, dynamic>> _storyStarters = [
               style: ElevatedButton.styleFrom(backgroundColor: Palette.indigoPrimary, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
               child: ref.watch(journalProvider).isLoading 
                 ? const CircularProgressIndicator(color: Colors.white) 
-                : const Text("Analyze & Save", style: TextStyle(color: Colors.white, fontSize: 18)),            ),
+                : const Text("Analyze & Save", style: TextStyle(color: Colors.white, fontSize: 18)),            
+                ),
           )
         ],
       ),

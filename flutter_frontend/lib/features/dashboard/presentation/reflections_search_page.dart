@@ -20,7 +20,7 @@ class _ReflectionsSearchPageState extends ConsumerState<ReflectionsSearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    final journalState = ref.watch(recentJournalsProvider);
+    final journalState = ref.watch(journalProvider);
 
     return Scaffold(
       // backgroundColor: Palette.iceWhite,

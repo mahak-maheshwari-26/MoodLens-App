@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database import get_db
 import models
+import bcrypt
 
 load_dotenv()
 
@@ -53,3 +54,9 @@ def get_current_user(token: str = Depends(oauth2_scheme) , db : Session = Depend
         raise credentials_exception
     
     return user # it returns the user object from DB
+
+def verify_password(plain_password: str, hashed_password: str):
+    return bcrypt.checkpw(plain_password.encode(), hashed_password.encode())
+
+def hash_password(password: str):
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt(12)).decode()

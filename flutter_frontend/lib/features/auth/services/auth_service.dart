@@ -45,7 +45,7 @@ class AuthService{
   Future<void> logout() async =>
     await _storage.delete(key: 'jwt_token');
 
-  // Backent POST Request for SignUp a User : Creating a User
+  // Backend POST Request for SignUp a User : Creating a User
   Future<Response> signup(String email , String password) async {
     return await _dio.post('/signup' , data: {
       'email' : email,

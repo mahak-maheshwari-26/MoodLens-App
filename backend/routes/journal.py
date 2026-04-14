@@ -103,32 +103,30 @@ def list_my_journals(
     - If Year passed, Month is Current Month
 
     """
+    query = db.query(JournalEntry).filter(JournalEntry.owner_id == current_user.id)
 
-    now = datetime.now()
-
-    target_month = month if month is not None else now.month
-    target_year = year if year is not None else now.year
+    # Only apply filters if they are actually provided
+    if year is not None:
+        query = query.filter(extract('year', JournalEntry.created_at) == year)
     
-    entries = (
-        db.query(JournalEntry)
-        .filter(JournalEntry.owner_id == current_user.id)
-        .filter(extract('year', JournalEntry.created_at) == target_year)
-        .filter(extract('month', JournalEntry.created_at) == target_month)
-        .order_by(JournalEntry.created_at.desc())
-        .all()
-    )
+    if month is not None:
+        query = query.filter(extract('month', JournalEntry.created_at) == month)
 
-    # entries = []
-    # for entry in db_entries:
-    #     entries.append({
-    #         "id": entry.id,
-    #         "title": entry.title,
-    #         "content": decrypt_text(entry.encrypted_content), 
-    #         "primary_emotion": entry.primary_emotion,
-    #         "secondary_emotion": entry.secondary_emotion,
-    #         "confidence_score": entry.confidence_score,
-    #         "created_at": entry.created_at
-    #     })
+    entries = query.order_by(JournalEntry.created_at.desc()).all()
+    
+    # now = datetime.now()
+
+    # target_month = month if month is not None else now.month
+    # target_year = year if year is not None else now.year
+    
+    # entries = (
+    #     db.query(JournalEntry)
+    #     .filter(JournalEntry.owner_id == current_user.id)
+    #     .filter(extract('year', JournalEntry.created_at) == target_year)
+    #     .filter(extract('month', JournalEntry.created_at) == target_month)
+    #     .order_by(JournalEntry.created_at.desc())
+    #     .all()
+    # )
 
     return{
         "entries" : entries,
@@ -207,7 +205,7 @@ def get_journal_entry(
     db: Session = Depends(get_db),
     current_user = Depends(auth_utils.get_current_user)
 ):
-    """Feteches a specificentry and decrypts the content and send to frontend"""
+    """Fetches a specific entry and decrypts the content and send to frontend"""
 
     entry = db.query(JournalEntry).filter(
         JournalEntry.id == journal_id,

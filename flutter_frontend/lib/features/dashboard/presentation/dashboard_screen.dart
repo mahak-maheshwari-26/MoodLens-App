@@ -4,6 +4,7 @@ import 'package:flutter_frontend/core/widgets/journal_details_modal.dart';
 import 'package:flutter_frontend/core/widgets/recent_reflection_card.dart';
 import 'package:flutter_frontend/features/auth/providers/auth_provider.dart';
 import 'package:flutter_frontend/features/dashboard/presentation/reflections_search_page.dart';
+import 'package:flutter_frontend/features/feedback/presentation/feedback_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../theme/app_theme.dart';
@@ -180,7 +181,17 @@ class MainDashboard extends ConsumerWidget {
             });
           },
         ),
-        
+        ListTile(
+          leading: const Icon(Icons.feedback_outlined),
+          title: const Text("Give Feedback"),
+          onTap: () {
+            Navigator.pop(context); // Close drawer
+            Navigator.push(
+              context, 
+              MaterialPageRoute(builder: (context) => const FeedbackScreen())
+            );
+          },
+        ),
         const Spacer(), 
         const Divider(),
         
@@ -424,7 +435,7 @@ class _MoodDayCard extends StatelessWidget {
           border: Border.all(color: Palette.indigoPrimary.withValues(alpha: 0.2),width: 1.5),
           boxShadow: [
             BoxShadow(
-              color: moodColor.withValues(alpha: 0.2),
+              color: moodColor.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
