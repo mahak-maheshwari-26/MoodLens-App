@@ -227,3 +227,75 @@ def get_journal_entry(
         confidence_score = entry.confidence_score,
         created_at = entry.created_at
     )
+
+
+@router.put("/{journal_id}", response_model=journal_schema.JournalDetailResponse)
+async def update_journal_entry(
+    journal_id: int,
+    journal_in: journal_schema.JournalUpdate,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user = Depends(auth_utils.get_current_user)
+):
+    # 1. Fetch the existing entry
+    db_entry = db.query(JournalEntry).filter(
+        JournalEntry.id == journal_id, 
+        JournalEntry.owner_id == current_user.id
+    ).first()
+
+    if not db_entry:
+        raise HTTPException(status_code=404, detail="Journal entry not found")
+
+    # 2. Update content if provided
+    if journal_in.content is not None:
+        # Re-analyze the mood because the content changed!
+        model = request.state.mood_predictor
+        raw_results = model(journal_in.content)[0]
+        
+        # Apply your threshold logic again
+        detected = [res for res in raw_results if res['score'] >= EMOTION_THRESHOLDS.get(res['label'], 0.5)]
+        detected.sort(key=lambda x: x['score'], reverse=True)
+
+        if len(detected) >= 1:
+            db_entry.primary_emotion = detected[0]['label']
+            db_entry.confidence_score = detected[0]['score']
+            db_entry.secondary_emotion = detected[1]['label'] if len(detected) >= 2 else None
+
+        # Re-encrypt the new content
+        db_entry.encrypted_content = encrypt_text(journal_in.content)
+
+    # 3. Update title if provided
+    if journal_in.title is not None:
+        db_entry.title = journal_in.title
+
+    # 4. Save and trigger the 'updated_at' timestamp
+    db.commit()
+    db.refresh(db_entry)
+
+    return journal_schema.JournalDetailResponse(
+        id=db_entry.id,
+        title=db_entry.title,
+        content=journal_in.content if journal_in.content else decrypt_text(db_entry.encrypted_content),
+        primary_emotion=db_entry.primary_emotion,
+        secondary_emotion=db_entry.secondary_emotion,
+        confidence_score=db_entry.confidence_score,
+        created_at=db_entry.created_at
+    )
+
+@router.delete("/{journal_id}")
+def delete_journal_entry(
+    journal_id: int,
+    db: Session = Depends(get_db),
+    current_user = Depends(auth_utils.get_current_user)
+):
+    entry = db.query(JournalEntry).filter(
+        JournalEntry.id == journal_id,
+        JournalEntry.owner_id == current_user.id
+    ).first()
+
+    if not entry:
+        raise HTTPException(status_code=404, detail="Journal entry not found")
+
+    db.delete(entry)
+    db.commit()
+    return {"message": "Deleted successfully"}

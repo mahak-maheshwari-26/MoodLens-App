@@ -44,7 +44,7 @@ async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind = engine)
     ensure_admin_exists()
     
-    yield
+    # yield
     global _predictor
     
     # --- STARTUP ---

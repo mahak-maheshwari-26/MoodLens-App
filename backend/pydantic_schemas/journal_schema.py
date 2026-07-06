@@ -26,6 +26,7 @@ class JournalResponse(BaseModel):
     secondary_emotion : Optional[str] = None
     confidence_score : float
     created_at : datetime
+    updated_at : Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes = True)
 

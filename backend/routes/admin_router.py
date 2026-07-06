@@ -22,6 +22,10 @@ def admin_login(request: AdminLoginRequest, db: Session = Depends(get_db)):
     if not admin or not auth_utils.verify_password(request.password, admin.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid admin credentials")
     
+    admin.last_login = datetime.now()
+    db.commit()
+    # db.refresh(admin)
+
     # Using your existing JWT logic
     access_token = auth_utils.create_access_token(data={"sub": admin.username, "role": "admin"})
     return {"access_token": access_token, "token_type": "bearer"}
@@ -44,7 +48,7 @@ def get_admin_users(db: Session = Depends(get_db)):
         # Calculate Age
         age = (datetime.now().date() - u.details.birthdate).days // 365 if u.details.birthdate else 0
         
-        # Get Journal Count (assuming relationship u.journals exists, else query it)
+        # Get Journal Count 
         journal_count = db.query(models.JournalEntry).filter(models.JournalEntry.owner_id == u.id).count()
 
         user_list.append({
