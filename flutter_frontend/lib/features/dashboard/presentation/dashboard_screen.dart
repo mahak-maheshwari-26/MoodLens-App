@@ -41,6 +41,27 @@ class MainDashboard extends ConsumerWidget {
     );
   }
 
+  void _showDeleteJournalDialog(BuildContext context, WidgetRef ref, int entryId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Delete Reflection?"),
+        content: const Text("This action cannot be undone."),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
+          TextButton(
+            onPressed: () async {
+              // Assuming your journalProvider notifier has a delete method
+              await ref.read(journalProvider.notifier).deleteEntry(entryId); 
+              if (context.mounted) Navigator.pop(context);
+            },
+            child: const Text("Delete", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showDeleteAccountDialog(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
@@ -200,11 +221,11 @@ class MainDashboard extends ConsumerWidget {
           title: const Text("Logout"),
           onTap: () => _showLogoutDialog(context, ref),
         ),
-        ListTile(
-          leading: const Icon(Icons.delete_forever, color: Colors.red),
-          title: const Text("Delete Account", style: TextStyle(color: Colors.red)),
-          onTap: () => _showDeleteAccountDialog(context, ref),
-        ),
+        // ListTile(
+        //   leading: const Icon(Icons.delete_forever, color: Colors.red),
+        //   title: const Text("Delete Account", style: TextStyle(color: Colors.red)),
+        //   onTap: () => _showDeleteAccountDialog(context, ref),
+        // ),
         const SizedBox(height: 20),
       ],
         ),
@@ -315,6 +336,7 @@ class MainDashboard extends ConsumerWidget {
                               builder: (context) => JournalDetailsModal(entry: entry),
                             );
                           },
+                          onLongPress: () => _showDeleteJournalDialog(context, ref, entry.id),
                         );
                       },
                       childCount: data.entries.length,

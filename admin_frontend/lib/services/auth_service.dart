@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  final String baseUrl = "http://localhost:8000"; // Your FastAPI URL
+  final String baseUrl = "http://localhost:8000"; // FastAPI URL
 
   Future<bool> login(String username, String password) async {
     try {

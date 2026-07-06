@@ -6,6 +6,7 @@ class JournalEntry{
   final String? secondaryEmotion;
   final double confidenceScore;
   final DateTime createdAt;
+  final DateTime? updatedAt;
 
   JournalEntry({
     required this.id,
@@ -15,6 +16,7 @@ class JournalEntry{
     this.secondaryEmotion,
     required this.confidenceScore,
     required this.createdAt,
+    this.updatedAt,
   });
 
   factory JournalEntry.fromJson(Map<String,dynamic> json){
@@ -26,9 +28,13 @@ class JournalEntry{
       secondaryEmotion : json['secondary_emotion'],
       confidenceScore : json['confidence_score'].toDouble(),
       createdAt : DateTime.parse(json['created_at']).toLocal(),
+      updatedAt: json['updated_at'] != null 
+          ? DateTime.parse(json['updated_at']).toLocal() 
+          : null,
     );
   }
 }
+
 
 class JournalListResponse{
   final List<JournalEntry> entries;

@@ -113,7 +113,7 @@ final class JournalNotifierProvider
   JournalNotifier create() => JournalNotifier();
 }
 
-String _$journalNotifierHash() => r'3df46eac750078173dbcc079e498dc3e5b1ce92e';
+String _$journalNotifierHash() => r'ddc8c0b420849dc6384b5c5c5c0b64a1ddc70464';
 
 abstract class _$JournalNotifier extends $AsyncNotifier<JournalListResponse> {
   FutureOr<JournalListResponse> build();

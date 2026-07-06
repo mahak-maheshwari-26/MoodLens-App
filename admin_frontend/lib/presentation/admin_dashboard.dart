@@ -12,7 +12,7 @@ class AdminDashboardPage extends ConsumerWidget {
   const AdminDashboardPage({super.key});
 
   void _handleLogout(BuildContext context, WidgetRef ref) async {
-    // Accessing logout from your service
+    // Accessing logout from service
     await ref.read(adminServiceProvider).logout();
     if (context.mounted) {
       Navigator.pushReplacement(

@@ -64,6 +64,16 @@ class JournalNotifier extends _$JournalNotifier{
     ref.invalidate(recentJournalsProvider);
     ref.invalidate(journalStatsProvider);
   }
+
+  Future<void> deleteEntry(int id) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await ref.read(journalServiceProvider).deleteJournal(id);
+      return await ref.read(journalServiceProvider).fetchJournals();
+    });
+    ref.invalidate(recentJournalsProvider);
+    ref.invalidate(journalStatsProvider);
+  }
 }
 
 

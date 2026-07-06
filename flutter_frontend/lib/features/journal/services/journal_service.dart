@@ -122,4 +122,11 @@ class JournalService{
   return JournalEntry.fromJson(response.data);
  }
 
+  Future<void> deleteJournal(int id) async {
+    final token = await _getToken();
+    await _dio.delete(
+      '/journals/$id',
+      options: Options(headers: {'Authorization': 'Bearer $token'}),
+    );
+  }
 }

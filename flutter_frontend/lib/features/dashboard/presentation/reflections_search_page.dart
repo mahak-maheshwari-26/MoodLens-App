@@ -95,10 +95,16 @@ class _ReflectionsSearchPageState extends ConsumerState<ReflectionsSearchPage> {
                   // Time Filter
                   bool matchesTime = true;
                   final now = DateTime.now();
+
                   if (selectedTimeRange == "Week") {
                     matchesTime = entry.createdAt.isAfter(now.subtract(const Duration(days: 7)));
                   } else if (selectedTimeRange == "Month") {
-                    matchesTime = entry.createdAt.isAfter(now.subtract(const Duration(days: 30)));
+                    // matchesTime = entry.createdAt.isAfter(now.subtract(const Duration(days: 30)));
+                    final firstDayOfCurrentMonth = DateTime(now.year, now.month, 1);
+                    final firstDayOfLastMonth = DateTime(now.year, now.month - 1, 1);
+                  
+                    matchesTime = entry.createdAt.isAfter(firstDayOfLastMonth) && 
+                                  entry.createdAt.isBefore(firstDayOfCurrentMonth);
                   }
 
                   return matchesSearch && matchesEmotion && matchesTime;
@@ -140,7 +146,7 @@ class _ReflectionsSearchPageState extends ConsumerState<ReflectionsSearchPage> {
         label: Text(label),
         selected: isSelected,
         onSelected: (_) => onSelected(),
-        selectedColor: Palette.indigoPrimary.withOpacity(0.2),
+        selectedColor: Palette.indigoPrimary.withValues(alpha: 0.2),
         labelStyle: TextStyle(
           color: isSelected ? Palette.indigoPrimary : Palette.bodyGrey,
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,

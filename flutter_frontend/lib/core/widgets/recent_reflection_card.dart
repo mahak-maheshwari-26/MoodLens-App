@@ -6,8 +6,9 @@ import '../../../theme/app_theme.dart';
 class RecentReflectionCard extends StatelessWidget {
   final JournalEntry entry;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
 
-  const RecentReflectionCard({super.key, required this.entry, required this.onTap});
+  const RecentReflectionCard({super.key, required this.entry, required this.onTap, this.onLongPress, });
 
   static Color getMoodColor(String emotion) {
     return switch (emotion.toLowerCase()) {
@@ -26,9 +27,18 @@ class RecentReflectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final String confidence = "${(entry.confidenceScore * 100).toStringAsFixed(0)}%";
+
+    final bool isEdited = entry.updatedAt != null && 
+          entry.updatedAt!.isAfter(entry.createdAt.add(Duration(seconds: 1)));  
     
+    final String dateText = isEdited 
+      ? "Edited ${DateFormat('d MMM').format(entry.updatedAt!.toLocal())}" 
+      : DateFormat('d MMM').format(entry.createdAt.toLocal());
+
+
     return GestureDetector(
       onTap: onTap,
+      onLongPress: onLongPress,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         padding: const EdgeInsets.all(10),
@@ -49,8 +59,16 @@ class RecentReflectionCard extends StatelessWidget {
                       maxLines : 1,
                       style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Palette.slateHeading)),
                 ),
-                Text(DateFormat('d MMM').format(entry.createdAt.toLocal()),
-                    style: const TextStyle(color: Palette.slateHeading, fontSize: 14, fontWeight: FontWeight.w500)),
+                // Text(DateFormat('d MMM').format(entry.createdAt.toLocal()),
+                  Text(
+                    dateText,
+                    style: TextStyle(
+                        color: isEdited ? Palette.indigoPrimary : Palette.slateHeading,
+                        // color: Palette.slateHeading, 
+                        fontSize: 14, 
+                        fontWeight: FontWeight.w500,
+                        fontStyle: isEdited ? FontStyle.italic : FontStyle.normal,
+                        )),
               ],
             ),
             const SizedBox(height: 12),
